@@ -49,8 +49,6 @@ public class RainCubes : MonoBehaviour
 
         Cube cube = _pool.Get();
         cube.Touch += DestroyBlob;
-
-        cube.add
     }
 
     private void DestroyBlob(Cube cube)
