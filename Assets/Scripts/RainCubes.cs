@@ -30,7 +30,8 @@ public class RainCubes : MonoBehaviour
             return cube;
         },
         actionOnGet: (cube) => ActionOnGet(cube),
-        actionOnRelease: (blob) => blob.gameObject.SetActive(false),
+        actionOnRelease: (cube) => cube.gameObject.SetActive(false),
+        actionOnDestroy: (cube) => Destroy(cube),
         collectionCheck: true,
         defaultCapacity: _poolSize,
         maxSize: _poolSize
@@ -48,6 +49,8 @@ public class RainCubes : MonoBehaviour
 
         Cube cube = _pool.Get();
         cube.Touch += DestroyBlob;
+
+        cube.add
     }
 
     private void DestroyBlob(Cube cube)
