@@ -38,9 +38,9 @@ public class RainCubes : MonoBehaviour
         );
     }
 
-    private void Start() => InvokeRepeating(nameof(SpawnBlob), 0.0f, _spawnInterval);
+    private void Start() => InvokeRepeating(nameof(SpawnCube), 0.0f, _spawnInterval);
 
-    private void SpawnBlob()
+    private void SpawnCube()
     {
         if (_countActiveCubes >= _poolSize)
             return;
@@ -48,18 +48,18 @@ public class RainCubes : MonoBehaviour
         _countActiveCubes++;
 
         Cube cube = _pool.Get();
-        cube.Touch += DestroyBlob;
+        cube.Touch += DestroyCube;
     }
 
-    private void DestroyBlob(Cube cube)
+    private void DestroyCube(Cube cube)
     {
-        cube.Touch -= DestroyBlob;
+        cube.Touch -= DestroyCube;
         _colorer.ChangeRandomColor(cube.Renderer);
 
-        StartCoroutine(ReturnBlob(cube, _lifeTime));
+        StartCoroutine(ReturnCube(cube, _lifeTime));
     }
 
-    private IEnumerator ReturnBlob(Cube cube, float delay)
+    private IEnumerator ReturnCube(Cube cube, float delay)
     {
         yield return new WaitForSeconds(delay);
 
