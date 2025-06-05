@@ -1,6 +1,3 @@
 using UnityEngine;
 
-public class Platform : MonoBehaviour
-{
-
-}
+public class Platform : MonoBehaviour { }
