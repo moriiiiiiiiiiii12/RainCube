@@ -56,10 +56,15 @@ public class Spawner : MonoBehaviour
 
     private void DestroyCube(Cube cube)
     {
-        cube.Touch -= DestroyCube;
+        if (cube != null)
+        {
+            cube.ResetParameters();
+            
+            cube.Touch -= DestroyCube;
 
-        _pool.Release(cube);
-        _countActiveCubes--;
+            _pool.Release(cube);
+            _countActiveCubes--;
+        }
     }
 
     private void ActionOnGet(Cube cube)

@@ -12,7 +12,19 @@ public class Cube : MonoBehaviour
 
     public event Action<Cube> Touch;
 
-    private void Start() => SetParameters();
+    private void Start() => ResetParameters();
+
+    public void ResetParameters()
+    {
+        _isFirstTouch = true;
+
+        if (TryGetComponent(out Rigidbody rigidbody))
+            rigidbody.velocity = Vector3.zero;
+
+        transform.rotation = Quaternion.identity;
+
+        Colorer.ChangeColor(_renderer, _defaultColor);
+    }
     
     private void OnCollisionEnter(Collision collision)
     {
@@ -30,23 +42,6 @@ public class Cube : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
 
-        if (this != null)
-        {
-            Touch?.Invoke(this);
-
-            SetParameters();
-        }
-    }
-
-    private void SetParameters()
-    {
-        _isFirstTouch = true;
-
-        if (TryGetComponent(out Rigidbody rigidbody))
-            rigidbody.velocity = Vector3.zero;
-
-        transform.rotation = Quaternion.identity;
-
-        Colorer.ChangeColor(_renderer, _defaultColor);
+        Touch?.Invoke(this);
     }
 }
