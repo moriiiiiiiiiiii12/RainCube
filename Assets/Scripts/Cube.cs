@@ -14,17 +14,6 @@ public class Cube : MonoBehaviour
 
     private void Start() => ResetParameters();
 
-    public void ResetParameters()
-    {
-        _isFirstTouch = true;
-
-        if (TryGetComponent(out Rigidbody rigidbody))
-            rigidbody.velocity = Vector3.zero;
-
-        transform.rotation = Quaternion.identity;
-
-        Colorer.ChangeColor(_renderer, _defaultColor);
-    }
     
     private void OnCollisionEnter(Collision collision)
     {
@@ -36,6 +25,18 @@ public class Cube : MonoBehaviour
 
             StartCoroutine(ReturnCube(_lifeTime));
         }
+    }
+    
+    public void ResetParameters()
+    {
+        _isFirstTouch = true;
+
+        if (TryGetComponent(out Rigidbody rigidbody))
+            rigidbody.velocity = Vector3.zero;
+
+        transform.rotation = Quaternion.identity;
+
+        Colorer.ChangeColor(_renderer, _defaultColor);
     }
 
     private IEnumerator ReturnCube(float delay)
