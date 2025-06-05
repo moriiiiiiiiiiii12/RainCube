@@ -1,19 +1,19 @@
 using System.Collections;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class RainCubes : MonoBehaviour
+public class Spawner : MonoBehaviour
 {
     [Header("Необходимые компоненты: ")]
     [SerializeField] private Collider _platformCollider;
     [SerializeField] private Cube _prefabCube;
-    [SerializeField] private Colorer _colorer;
 
     [Header("Настройки пула: ")]
     [SerializeField] private float _spawnHeight = 2f;
     [SerializeField] private int _poolSize = 5;
     [SerializeField] private float _spawnInterval = 1f;
-    [SerializeField] private float _lifeTime = 5f;
 
     private int _countActiveCubes = 0;
     private ObjectPool<Cube> _pool;
@@ -38,46 +38,35 @@ public class RainCubes : MonoBehaviour
         );
     }
 
-    private void Start() => InvokeRepeating(nameof(SpawnCube), 0.0f, _spawnInterval);
+    private void Start() => StartCoroutine(nameof(SpawnCube));
 
-    private void SpawnCube()
+    private IEnumerator SpawnCube()
     {
-        if (_countActiveCubes >= _poolSize)
-            return;
+        while (true)
+        {
+            if (_countActiveCubes <= _poolSize)
+            {
+                _countActiveCubes++;
+                Cube cube = _pool.Get();
 
-        _countActiveCubes++;
+                cube.Touch += DestroyCube;
+            }
 
-        Cube cube = _pool.Get();
-        cube.Touch += DestroyCube;
+            yield return new WaitForSeconds(_spawnInterval);
+        }
     }
 
     private void DestroyCube(Cube cube)
     {
         cube.Touch -= DestroyCube;
-        _colorer.ChangeRandomColor(cube.Renderer);
 
-        StartCoroutine(ReturnCube(cube, _lifeTime));
-    }
-
-    private IEnumerator ReturnCube(Cube cube, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-
-        if (cube != null)
-        {
-            _pool.Release(cube);
-            _countActiveCubes--;
-        }
+        _pool.Release(cube);
+        _countActiveCubes--;
     }
 
     private void ActionOnGet(Cube cube)
     {
         cube.transform.position = GetRandomPositionPlatform();
-
-        if (cube.TryGetComponent(out Rigidbody rigidbody))
-            rigidbody.velocity = Vector3.zero;
-
-        _colorer.ChangeColor(cube.Renderer, cube.DefaultColor);
 
         cube.gameObject.SetActive(true);
     }
