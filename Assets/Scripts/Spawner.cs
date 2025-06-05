@@ -54,24 +54,24 @@ public class Spawner : MonoBehaviour
         }
     }
 
-    private void DestroyCube(Cube cube)
-    {
-        if (cube != null)
-        {
-            cube.ResetParameters();
-            
-            cube.Touch -= DestroyCube;
-
-            _pool.Release(cube);
-            _countActiveCubes--;
-        }
-    }
-
     private void ActionOnGet(Cube cube)
     {
         cube.transform.position = GetRandomPositionPlatform();
 
         cube.gameObject.SetActive(true);
+    }
+    
+    private void DestroyCube(Cube cube)
+    {
+        if (cube != null)
+        {
+            cube.ResetParameters();
+
+            cube.Touch -= DestroyCube;
+
+            _pool.Release(cube);
+            _countActiveCubes--;
+        }
     }
 
     private Vector3 GetRandomPositionPlatform()
