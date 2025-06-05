@@ -14,7 +14,6 @@ public class Cube : MonoBehaviour
 
     private void Start() => ResetParameters();
 
-    
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.TryGetComponent<Platform>(out Platform platform) && _isFirstTouch == true)
@@ -26,7 +25,7 @@ public class Cube : MonoBehaviour
             StartCoroutine(ReturnCube(_lifeTime));
         }
     }
-    
+
     public void ResetParameters()
     {
         _isFirstTouch = true;
