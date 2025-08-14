@@ -1,32 +1,30 @@
 using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 
 public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
 {
     [Header("Необходимые компоненты: ")]
-    [SerializeField] protected T _prefab;
+    [SerializeField] protected T Prefab;
 
     [Header("Настройки пула: ")]
-    [SerializeField] protected int _poolSize = 5;
+    [SerializeField] protected int PoolSize = 5;
 
-    protected int _countActiveObjects = 0;
-    protected ObjectPool<T> _pool;
+    protected ObjectPool<T> Pool;
 
     public int CountSpawnedObjects { get; private set; } = 0;
     public int CountCreatedObjects { get; private set; } = 0;
-    public int CountActiveObjects => _countActiveObjects;
+    public int CountActiveObjects { get; private set; } = 0;
 
     public event Action OnStatsChange;
 
     protected virtual void Awake()
     {
-        _pool = new ObjectPool<T>
+        Pool = new ObjectPool<T>
         (
             createFunc: () =>
             {
-                T prefab = Instantiate(_prefab);
+                T prefab = Instantiate(Prefab);
                 prefab.gameObject.SetActive(false);
 
                 CountCreatedObjects++;
@@ -37,14 +35,14 @@ public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
             actionOnGet: (prefab) =>
             {
                 CountSpawnedObjects++;
-                _countActiveObjects++;
+                CountActiveObjects++;
                 OnStatsChange?.Invoke();
 
                 ActionOnGet(prefab);
             },
             actionOnRelease: (prefab) =>
             {
-                _countActiveObjects--;
+                CountActiveObjects--;
                 OnStatsChange?.Invoke();
 
                 ActionOnRelease(prefab);
@@ -57,8 +55,8 @@ public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
                 Destroy(prefab);
             },
             collectionCheck: true,
-            defaultCapacity: _poolSize,
-            maxSize: _poolSize
+            defaultCapacity: PoolSize,
+            maxSize: PoolSize
         );
     }
 

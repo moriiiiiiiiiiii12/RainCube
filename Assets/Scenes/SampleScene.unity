@@ -937,8 +937,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dc4d1caaea8773178aa49033754d703, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 5833000787635842754, guid: 4ab5066ab18f86d28ae4ab54eea8f2ff, type: 3}
-  _poolSize: 10
+  Prefab: {fileID: 5833000787635842754, guid: 4ab5066ab18f86d28ae4ab54eea8f2ff, type: 3}
+  PoolSize: 10
   _spawnerCube: {fileID: 1286292108}
 --- !u!4 &993181297
 Transform:
@@ -1162,10 +1162,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 31577245e56fee3b7bd10a05cc1f1c03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _prefab: {fileID: 9072577397450870993, guid: b38d528e79ddc274aae42eda03fb877a, type: 3}
-  _poolSize: 10
-  _spawnInterval: 1
-  _spawnHeight: 10
+  Prefab: {fileID: 9072577397450870993, guid: b38d528e79ddc274aae42eda03fb877a, type: 3}
+  PoolSize: 10
+  SpawnInterval: 1
+  SpawnHeight: 2
   _platformCollider: {fileID: 351503358}
 --- !u!1 &1366069767
 GameObject:

@@ -1,7 +1,4 @@
-using System.Collections;
 using UnityEngine;
-using UnityEngine.Pool;
-using UnityEngine.UIElements;
 
 
 public class SpawnerBomb : Spawner<Bomb>
@@ -21,9 +18,9 @@ public class SpawnerBomb : Spawner<Bomb>
 
     private void Spawn(Vector3 position)
     {
-        if (_countActiveObjects < _poolSize)
+        if (CountActiveObjects < PoolSize)
         {
-            Bomb bomb = _pool.Get();
+            Bomb bomb = Pool.Get();
             bomb.transform.position = position;
             bomb.ExecuteExplode();
 
@@ -39,7 +36,7 @@ public class SpawnerBomb : Spawner<Bomb>
 
             bomb.OnExplode -= DestroyObject;
 
-            _pool.Release(bomb);
+            Pool.Release(bomb);
         }
     }
 }
