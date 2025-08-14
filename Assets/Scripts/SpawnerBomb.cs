@@ -8,12 +8,12 @@ public class SpawnerBomb : Spawner<Bomb>
 
     private void OnEnable()
     {
-        _spawnerCube.OnDestroyCube += Spawn;
+        _spawnerCube.DestroyCube += Spawn;
     }
 
     private void OnDisable()
     {
-        _spawnerCube.OnDestroyCube -= Spawn;
+        _spawnerCube.DestroyCube -= Spawn;
     }
 
     private void Spawn(Vector3 position)
@@ -24,7 +24,7 @@ public class SpawnerBomb : Spawner<Bomb>
             bomb.transform.position = position;
             bomb.ExecuteExplode();
 
-            bomb.OnExplode += DestroyObject;
+            bomb.Explode += DestroyObject;
         }
     }
 
@@ -34,7 +34,7 @@ public class SpawnerBomb : Spawner<Bomb>
         {
             bomb.ResetParameters();
 
-            bomb.OnExplode -= DestroyObject;
+            bomb.Explode -= DestroyObject;
 
             Pool.Release(bomb);
         }

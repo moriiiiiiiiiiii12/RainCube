@@ -5,18 +5,23 @@ using UnityEngine.Pool;
 
 public class SpawnerCube : Spawner<Cube>
 {
-    [SerializeField] protected float SpawnInterval = 1f;
-    [SerializeField] protected float SpawnHeight = 2f;
+    [SerializeField] private float _spawnInterval = 1f;
+    [SerializeField] private float _spawnHeight = 2f;
 
     [Header("Доп компоненты: ")]
     [SerializeField] private Collider _platformCollider;
 
-    public event Action<Vector3> OnDestroyCube;
+    public event Action<Vector3> DestroyCube;
 
-    private void Start() => StartCoroutine(nameof(Spawn));
+    private void Start()
+    {
+        StartCoroutine(Spawn());
+    }
 
     private IEnumerator Spawn()
     {
+        WaitForSeconds waitForSeconds = new WaitForSeconds(_spawnInterval);
+
         while (enabled)
         {
             if (CountActiveObjects < PoolSize)
@@ -28,7 +33,7 @@ public class SpawnerCube : Spawner<Cube>
                 cube.Touch += DestroyObject;
             }
 
-            yield return new WaitForSeconds(SpawnInterval);
+            yield return waitForSeconds;
         }
     }
     
@@ -43,7 +48,7 @@ public class SpawnerCube : Spawner<Cube>
 
             Pool.Release(cube);
 
-            OnDestroyCube?.Invoke(position);
+            DestroyCube?.Invoke(position);
         }
     }
 
@@ -53,7 +58,7 @@ public class SpawnerCube : Spawner<Cube>
 
         float randomX = UnityEngine.Random.Range(boundsPlatform.min.x, boundsPlatform.max.x);
         float randomZ = UnityEngine.Random.Range(boundsPlatform.min.z, boundsPlatform.max.z);
-        float spawnHeight = boundsPlatform.max.y + SpawnHeight;
+        float spawnHeight = boundsPlatform.max.y + _spawnHeight;
 
         return new Vector3(randomX, spawnHeight, randomZ);
     }

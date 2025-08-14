@@ -4,10 +4,10 @@ using UnityEngine;
 public abstract class SpawnerView<T> : MonoBehaviour where T : MonoBehaviour
 {
     [Header("Ссылка на спавнер")]
-    [SerializeField] protected Spawner<T> _spawner;
+    [SerializeField] protected Spawner<T> Spawner;
 
     [Header("UI Элементы")]
-    [SerializeField] protected TextMeshProUGUI _statsText;
+    [SerializeField] protected TextMeshProUGUI StatsText;
 
     private void Start()
     {
@@ -16,19 +16,39 @@ public abstract class SpawnerView<T> : MonoBehaviour where T : MonoBehaviour
 
     private void OnEnable()
     {
-        _spawner.OnStatsChange += UpdateStats;
+        Spawner.CreatedObjectChange += UpdateCreatedStats;
+        Spawner.SpawnedObjectChange += UpdateSpawnedStats;
+        Spawner.ActiveObjectChange += UpdateActiveStats;
     }
 
     private void OnDisable()
     {
-        _spawner.OnStatsChange -= UpdateStats;
+        Spawner.CreatedObjectChange -= UpdateCreatedStats;
+        Spawner.SpawnedObjectChange -= UpdateSpawnedStats;
+        Spawner.ActiveObjectChange -= UpdateActiveStats;
+    }
+
+    protected virtual void UpdateCreatedStats(int count)
+    {
+        UpdateStats();
+    }
+
+    protected virtual void UpdateSpawnedStats(int count)
+    {
+        UpdateStats();
+    }
+
+    protected virtual void UpdateActiveStats(int count)
+    {
+        UpdateStats();
     }
 
     protected virtual void UpdateStats()
     {
-        _statsText.text = $"{typeof(T).Name}:\n" +
-                          $"Создано: {_spawner.CountCreatedObjects}\n" +
-                          $"Заспавнено: {_spawner.CountSpawnedObjects}\n" +
-                          $"Активные: {_spawner.CountActiveObjects}";
+        StatsText.text = $"{typeof(T).Name}:\n" +
+                          $"Создано: {Spawner.CountCreatedObjects}\n" +
+                          $"Заспавнено: {Spawner.CountSpawnedObjects}\n" +
+                          $"Активные: {Spawner.CountActiveObjects}";
     }
 }
+

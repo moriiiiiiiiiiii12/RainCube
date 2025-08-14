@@ -16,9 +16,11 @@ public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
     public int CountCreatedObjects { get; private set; } = 0;
     public int CountActiveObjects { get; private set; } = 0;
 
-    public event Action OnStatsChange;
+    public event Action<int> CreatedObjectChange;
+    public event Action<int> SpawnedObjectChange;
+    public event Action<int> ActiveObjectChange;
 
-    protected virtual void Awake()
+    private void Awake()
     {
         Pool = new ObjectPool<T>
         (
@@ -28,7 +30,7 @@ public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
                 prefab.gameObject.SetActive(false);
 
                 CountCreatedObjects++;
-                OnStatsChange?.Invoke();
+                CreatedObjectChange?.Invoke(CountCreatedObjects);
 
                 return prefab;
             },
@@ -36,21 +38,22 @@ public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
             {
                 CountSpawnedObjects++;
                 CountActiveObjects++;
-                OnStatsChange?.Invoke();
+                SpawnedObjectChange?.Invoke(CountSpawnedObjects);
+                ActiveObjectChange?.Invoke(CountActiveObjects);
 
                 ActionOnGet(prefab);
             },
             actionOnRelease: (prefab) =>
             {
                 CountActiveObjects--;
-                OnStatsChange?.Invoke();
+                ActiveObjectChange?.Invoke(CountActiveObjects);
 
                 ActionOnRelease(prefab);
             },
             actionOnDestroy: (prefab) =>
             {
                 CountCreatedObjects--;
-                OnStatsChange?.Invoke();
+                CreatedObjectChange?.Invoke(CountCreatedObjects);
 
                 Destroy(prefab);
             },

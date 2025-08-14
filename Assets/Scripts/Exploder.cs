@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public static class Exploder
+public class Exploder
 {
-    public static void Explode(Vector3 position, float explosionRadius, float explosionForce)
+    public void Explode(Vector3 position, float explosionRadius, float explosionForce)
     {
         Collider[] colliders = Physics.OverlapSphere(position, explosionRadius);
 

@@ -3,17 +3,24 @@ using UnityEngine;
 
 public class Colorer : MonoBehaviour
 {
-    public static void ChangeRandomColor(Renderer renderer)
+    private Renderer _renderer;
+
+    public Colorer(Renderer renderer)
     {
-        renderer.material.color = Random.ColorHSV();
+        _renderer = renderer;
     }
 
-    public static void ChangeColor(Renderer renderer, Color color)
+    public void ChangeRandomColor()
+    {
+        _renderer.material.color = Random.ColorHSV();
+    }
+
+    public void ChangeColor(Renderer renderer, Color color)
     {
         renderer.material.color = color;
     }
 
-    public static IEnumerator FadeOut(Renderer renderer, Color originalColor, float fadeTime)
+    public IEnumerator FadeOut(Color originalColor, float fadeTime)
     {
         float elapsedTime = 0f;
 
@@ -24,7 +31,7 @@ public class Colorer : MonoBehaviour
             float t = Mathf.Clamp01(elapsedTime / fadeTime);
             
             Color intermediateColor = new Color(originalColor.r, originalColor.g, originalColor.b, Mathf.Lerp(originalColor.a, 0, t));
-            renderer.material.color = intermediateColor;
+            _renderer.material.color = intermediateColor;
 
             yield return null;
         }

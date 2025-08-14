@@ -4,15 +4,21 @@ using UnityEngine;
 
 public class Cube : MonoBehaviour
 {
+    [SerializeField] private Rigidbody _rigidbody;
     [SerializeField] private Renderer _renderer;
     [SerializeField] private Color _defaultColor;
     [SerializeField] private float _lifeTime = 5f;
 
+    private Colorer _colorer;
     private bool _isFirstTouch = true;
 
     public event Action<Cube> Touch;
 
-    private void Start() => ResetParameters();
+    private void Start()
+    {
+        ResetParameters();
+        _colorer = new Colorer(_renderer);
+    }
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -20,9 +26,9 @@ public class Cube : MonoBehaviour
         {
             _isFirstTouch = false;
 
-            Colorer.ChangeRandomColor(_renderer);
+            _colorer.ChangeRandomColor();
 
-            StartCoroutine(ReturnCube(_lifeTime));
+            StartCoroutine(Return(_lifeTime));
         }
     }
 
@@ -30,15 +36,14 @@ public class Cube : MonoBehaviour
     {
         _isFirstTouch = true;
 
-        if (TryGetComponent(out Rigidbody rigidbody))
-            rigidbody.velocity = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
 
         transform.rotation = Quaternion.identity;
 
-        Colorer.ChangeColor(_renderer, _defaultColor);
+        _colorer.ChangeColor(_renderer, _defaultColor);
     }
 
-    private IEnumerator ReturnCube(float delay)
+    private IEnumerator Return(float delay)
     {
         yield return new WaitForSeconds(delay);
 
