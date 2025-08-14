@@ -1,87 +1,76 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Pool;
 
-public class Spawner : MonoBehaviour
+public abstract class Spawner<T> : MonoBehaviour where T : MonoBehaviour
 {
     [Header("Необходимые компоненты: ")]
-    [SerializeField] private Collider _platformCollider;
-    [SerializeField] private Cube _prefabCube;
+    [SerializeField] protected T _prefab;
 
     [Header("Настройки пула: ")]
-    [SerializeField] private float _spawnHeight = 2f;
-    [SerializeField] private int _poolSize = 5;
-    [SerializeField] private float _spawnInterval = 1f;
+    [SerializeField] protected int _poolSize = 5;
 
-    private int _countActiveCubes = 0;
-    private ObjectPool<Cube> _pool;
+    protected int _countActiveObjects = 0;
+    protected ObjectPool<T> _pool;
 
-    private void Awake()
+    public int CountSpawnedObjects { get; private set; } = 0;
+    public int CountCreatedObjects { get; private set; } = 0;
+    public int CountActiveObjects => _countActiveObjects;
+
+    public event Action OnStatsChange;
+
+    protected virtual void Awake()
     {
-        _pool = new ObjectPool<Cube>
+        _pool = new ObjectPool<T>
         (
-        createFunc: () =>
-        {
-            Cube cube = Instantiate(_prefabCube);
-            cube.gameObject.SetActive(false);
+            createFunc: () =>
+            {
+                T prefab = Instantiate(_prefab);
+                prefab.gameObject.SetActive(false);
 
-            return cube;
-        },
-        actionOnGet: (cube) => ActionOnGet(cube),
-        actionOnRelease: (cube) => cube.gameObject.SetActive(false),
-        actionOnDestroy: (cube) => Destroy(cube),
-        collectionCheck: true,
-        defaultCapacity: _poolSize,
-        maxSize: _poolSize
+                CountCreatedObjects++;
+                OnStatsChange?.Invoke();
+
+                return prefab;
+            },
+            actionOnGet: (prefab) =>
+            {
+                CountSpawnedObjects++;
+                _countActiveObjects++;
+                OnStatsChange?.Invoke();
+
+                ActionOnGet(prefab);
+            },
+            actionOnRelease: (prefab) =>
+            {
+                _countActiveObjects--;
+                OnStatsChange?.Invoke();
+
+                ActionOnRelease(prefab);
+            },
+            actionOnDestroy: (prefab) =>
+            {
+                CountCreatedObjects--;
+                OnStatsChange?.Invoke();
+
+                Destroy(prefab);
+            },
+            collectionCheck: true,
+            defaultCapacity: _poolSize,
+            maxSize: _poolSize
         );
     }
 
-    private void Start() => StartCoroutine(nameof(SpawnCube));
-
-    private IEnumerator SpawnCube()
+    protected void ActionOnGet(T prefab)
     {
-        while (true)
-        {
-            if (_countActiveCubes <= _poolSize)
-            {
-                _countActiveCubes++;
-                Cube cube = _pool.Get();
-
-                cube.Touch += DestroyCube;
-            }
-
-            yield return new WaitForSeconds(_spawnInterval);
-        }
+        prefab.gameObject.SetActive(true);
     }
 
-    private void ActionOnGet(Cube cube)
+    protected void ActionOnRelease(T prefab)
     {
-        cube.transform.position = GetRandomPositionPlatform();
-
-        cube.gameObject.SetActive(true);
-    }
-    
-    private void DestroyCube(Cube cube)
-    {
-        if (cube != null)
-        {
-            cube.ResetParameters();
-
-            cube.Touch -= DestroyCube;
-
-            _pool.Release(cube);
-            _countActiveCubes--;
-        }
+        prefab.gameObject.SetActive(false);
     }
 
-    private Vector3 GetRandomPositionPlatform()
-    {
-        Bounds boundsPlatform = _platformCollider.bounds;
-
-        float randomX = Random.Range(boundsPlatform.min.x, boundsPlatform.max.x);
-        float randomZ = Random.Range(boundsPlatform.min.z, boundsPlatform.max.z);
-        float spawnHeight = boundsPlatform.max.y + _spawnHeight;
-
-        return new Vector3(randomX, spawnHeight, randomZ);
-    }
+    protected abstract void DestroyObject(T prefab);
 }
