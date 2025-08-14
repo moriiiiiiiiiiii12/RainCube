@@ -714,8 +714,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e000991f924f2bd29e02a2e409907e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawner: {fileID: 993181296}
-  _statsText: {fileID: 1621025568}
+  Spawner: {fileID: 993181296}
+  StatsText: {fileID: 1621025568}
 --- !u!1001 &955507184
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1077,8 +1077,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 45a7c4269d076aad3833b629ed20767f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _spawner: {fileID: 1286292108}
-  _statsText: {fileID: 1704634166}
+  Spawner: {fileID: 1286292108}
+  StatsText: {fileID: 1704634166}
 --- !u!1 &1278227641
 GameObject:
   m_ObjectHideFlags: 0
@@ -1164,8 +1164,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Prefab: {fileID: 9072577397450870993, guid: b38d528e79ddc274aae42eda03fb877a, type: 3}
   PoolSize: 10
-  SpawnInterval: 1
-  SpawnHeight: 2
+  _spawnInterval: 1
+  _spawnHeight: 10
   _platformCollider: {fileID: 351503358}
 --- !u!1 &1366069767
 GameObject:

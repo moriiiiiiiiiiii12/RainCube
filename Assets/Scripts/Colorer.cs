@@ -3,21 +3,16 @@ using UnityEngine;
 
 public class Colorer : MonoBehaviour
 {
-    private Renderer _renderer;
-
-    public Colorer(Renderer renderer)
-    {
-        _renderer = renderer;
-    }
+    [SerializeField] private Renderer _renderer;
 
     public void ChangeRandomColor()
     {
         _renderer.material.color = Random.ColorHSV();
     }
 
-    public void ChangeColor(Renderer renderer, Color color)
+    public void ChangeColor(Color color)
     {
-        renderer.material.color = color;
+        _renderer.material.color = color;
     }
 
     public IEnumerator FadeOut(Color originalColor, float fadeTime)

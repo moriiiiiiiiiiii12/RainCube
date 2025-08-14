@@ -10,18 +10,13 @@ public class Bomb : MonoBehaviour
     [SerializeField] private float _explosionForce = 700f;
 
     [SerializeField] private Renderer _renderer;
+    [SerializeField] private Colorer _colorer;
 
     private Exploder _exploder = new Exploder();
-    private Colorer _colorer;
     private Color _originalColor;
     private float _fadeTime;
 
     public event Action<Bomb> Explode;
-
-    private void Start()
-    {
-        _colorer = new Colorer(_renderer);
-    }
 
     public void ExecuteExplode()
     {
